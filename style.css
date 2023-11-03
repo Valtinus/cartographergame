@@ -27,16 +27,29 @@ button:hover {
 
 
 #ui {
+    display: flex;
     text-align: left;
     overflow: hidden;
 }
 
+#map_title {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#element {
+    display: flex;
+    justify-content: flex-start;
+}
+
 #table {
+    min-width: 490px;
     float:left;
 }
 
 #info {
     float: right;
+    margin-left: 20px;
 }
 
 #table_and_buttons {
@@ -76,11 +89,15 @@ th, td {
     text-align: center;
 }
 
-img {
-    width: 400px;
-    height: 100px;
+#missions {
+    display: flex;
+    flex-wrap: wrap;
 }
 
+img {
+    max-height: 130px;
+    margin: 10px;
+}
 .mountain {
     background-size: cover;
     background-position: center;

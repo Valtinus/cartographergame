@@ -231,10 +231,8 @@ const missions_container = document.querySelector("#missions")
 const ROWS = 11
 const COLS = 11
 
-const MAX_TIME = 28
 const SEASON_TIME = 7
 let timer = 0
-let total_time = 0
 
 let points = [0, 0, 0, 0]
 let total_points = 0
@@ -245,9 +243,10 @@ play_btn.addEventListener('click', startGame)
 
 let current_element
 
+const selectedMissions = getRandomMissions(missions)
+
 function startGame() {
     timer = 0
-    total_time = 0
     total_points = 0
     if (name_inp.value === '') {
         alert('Enter a player name!')
@@ -262,8 +261,8 @@ function startGame() {
     name_tit.innerHTML = `Complete your missions ${name_inp.value}!`
 
     createField(ROWS, COLS)
-    newRound()
     renderMissions()
+    newRound()
 }
 
 function createField(rows, cols) {
@@ -414,21 +413,26 @@ function placeElementOnField(element, x, y) {
 }
 
 function newRound() {
-    if (timer < 7) {
+    if (timer < SEASON_TIME) {
         current_season.innerHTML = `Current season: ${seasons[0]}`
+        setActiveMission(0, 1)
     }
-    else if (timer >= 7 && timer < 14) {
+    else if (timer >= SEASON_TIME && timer < 2 * SEASON_TIME) {
         current_season.innerHTML = `Current season: ${seasons[1]}`
+        setActiveMission(1, 2)
     }
-    else if (timer >= 14 && timer < 21) {
+    else if (timer >= 2 * SEASON_TIME && timer < 3 * SEASON_TIME) {
         current_season.innerHTML = `Current season: ${seasons[2]}`
+        setActiveMission(2, 3)
     }
-    else if (timer >= 21 && timer < 28) {
+    else if (timer >= 3 * SEASON_TIME && timer < 4 * SEASON_TIME) {
         current_season.innerHTML = `Current season: ${seasons[3]}`
+        setActiveMission(3, 0)
     }
     else {
         console.log("end")
     }
+
     time_left.innerHTML = `Time left from season: ${timer % 7}/${SEASON_TIME}`
     current_element = pickRandomElement()
     displayNextElement(current_element)
@@ -439,36 +443,83 @@ function getRandomMissions(missions) {
     const selectedMissions = []
     const numberOfMissions = 4
 
-    if (basicMissions.length < numberOfMissions) {
-        console.error("Nincs elegendő alap küldetés.");
-        return []
-    }
-
     while (selectedMissions.length < numberOfMissions) {
         const randomIndex = Math.floor(Math.random() * basicMissions.length)
         const selectedMission = basicMissions[randomIndex]
 
-        if (!selectedMissions.includes(selectedMission)) {
-            selectedMissions.push(selectedMission)
+        if (!selectedMissions.includes(selectedMission.id)) {
+            selectedMissions.push(selectedMission.id)
         }
     }
 
     return selectedMissions
 }
 
-const selectedMissions = getRandomMissions(missions)
-
 function renderMissions() {
-    console.log(selectedMissions)
     let getImgs = ""
     for (let i = 0; i < selectedMissions.length; i++) {
-        getImgs += `<img scr="./images/missions/${selectedMissions[i].id}.png">`
+        getImgs += `<img src="./images/missions/${selectedMissions[i]}.png" id="img${i}">`
     }
-    console.log(getImgs)
     missions_container.innerHTML = getImgs
 }
 
+function setActiveMission(s1, s2) {
+    const all = document.querySelectorAll("div img")
+    for (let i = 0; i < all.length; i++) {
+        all[i].style.border = "none"
+        all[i].style.borderRadius = "none"
+    }
 
+    const first = document.querySelector(`#img${s1}`)
+    const second = document.querySelector(`#img${s2}`)
+
+    first.style.border = "thick solid #FF2626"
+    first.style.borderRadius = "25px"
+    second.style.border = "thick solid #FF2626"
+    second.style.borderRadius = "25px"
+}
+
+function calcMissions (m1, m2) {
+    let total = 0
+    
+}
+
+function calcBorderlandsMission () {
+    const rows = table.getElementsByTagName('tr')
+    const cols = rows[0].getElementsByTagName('td').length
+    const rowCount = rows.length
+    
+    let fullRowCount = 0
+    let fullColCount = 0
+
+    for (let i = 0; i < rowCount; i++) {
+        let fullRow = true
+        for (let j = 0; j < cols; j++) {
+            if (rows[i].getElementsByTagName('td')[j].className == '') {
+                fullRow = false
+                break
+            }
+        }
+        if (fullRow) {
+            fullRowCount++
+        }
+    }
+
+    for (let j = 0; j < cols; j++) {
+        let fullCol = true
+        for (let i = 0; i < rowCount; i++) {
+            if (rows[i].getElementsByTagName('td')[j].className == '') {
+                fullCol = false
+                break
+            }
+        }
+        if (fullCol) {
+            fullColCount++
+        }
+    }
+
+    return (fullRowCount + fullColCount) * 6
+}
 
 
 
