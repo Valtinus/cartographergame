@@ -76,6 +76,11 @@ th, td {
     text-align: center;
 }
 
+img {
+    width: 400px;
+    height: 100px;
+}
+
 .mountain {
     background-size: cover;
     background-position: center;
