@@ -408,6 +408,7 @@ function placeElementOnField(element, x, y) {
             }
         }
     }
+
     timer += element.time
     newRound()
 }
@@ -432,6 +433,8 @@ function newRound() {
     else {
         console.log("end")
     }
+
+    
 
     time_left.innerHTML = `Time left from season: ${timer % 7}/${SEASON_TIME}`
     current_element = pickRandomElement()
@@ -481,7 +484,7 @@ function setActiveMission(s1, s2) {
 
 function calcMissions (m1, m2) {
     let total = 0
-    
+
 }
 
 function calcBorderlandsMission () {
