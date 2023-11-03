@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartographer Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="menu">
+        <h1>Explore the Potato Empire</h1>
+        <h3>Player name</h3>
+        <input type="text" id="name"><br>
+        <button id="play">Play</button>
+        <details>
+            <summary>How to play</summary>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio, perspiciatis excepturi. Eius, ea?
+                Voluptatibus consequatur eveniet quibusdam eligendi velit, sint iusto esse reprehenderit laborum maxime
+                et debitis quisquam voluptas enim.</p>
+        </details>
+    </div>
+
+    <div id="ingame">
+        <h2></h2>
+        <div id="ui">
+            <h2 id="map_title">Potato map</h3>
+            <div id="table">
+                <table class="field"></table>
+            </div>
+            <div id="info">
+                <div id="season">
+                    <h3>Current season: </h3>
+                </div>
+                <div id="element">
+                    <h3>Next piece:</h3>
+                    <div id="table_and_buttons">
+                        <table id="elementTable"></table>
+                        <div id="transfrom_buttons">
+                            <p id="time"></p>
+                            <button id="rotate">Rotate</button>
+                            <button id="mirror">Mirror</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+        <button id="return">Return to menu</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

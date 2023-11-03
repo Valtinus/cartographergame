@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&family=Poppins:wght@100&family=Ruthie&display=swap");
+
+body {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+  background-color: rgb(255, 254, 173);
+  font-family: 'Comfortaa', sans-serif;
+}
+
+button {
+  all: unset;
+  margin: 10px;
+  background-color: rgb(133, 117, 27);
+  padding: 10px;
+  color: white;
+  border-radius: 10px;
+}
+
+button:hover {
+    background-color: rgb(85, 75, 18);
+}
+
+#ingame {
+  display: none;
+}
+
+
+#ui {
+    text-align: left;
+    overflow: hidden;
+}
+
+#table {
+    float:left;
+}
+
+#info {
+    float: right;
+}
+
+#table_and_buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+#transfrom_buttons {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#transfrom_buttons button {
+    margin: 3px 10px 3px 30px;
+} 
+
+#name {
+  margin-bottom: 0px;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 3px;
+    margin: 0px auto 40px auto;
+}
+
+table, th, td {
+    border: none;
+}
+
+th, td {
+    background-color: rgb(164, 164, 109);
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}
+
+.mountain {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(./images/tiles/mountain_tile.png);
+}
+
+.town {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(./images/tiles/village_tile.png);
+}
+
+.water {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(./images/tiles/water_tile.png);
+}
+
+.forest {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(./images/tiles/forest_tile.png);
+}
+
+.farm {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(./images/tiles/plains_tile.png);
+}
