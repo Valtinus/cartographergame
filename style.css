@@ -5,7 +5,7 @@ body {
   margin: 0 auto;
   text-align: center;
   background-color: rgb(255, 254, 173);
-  font-family: 'Comfortaa', sans-serif;
+  font-family: "Comfortaa", sans-serif;
 }
 
 button {
@@ -18,117 +18,207 @@ button {
 }
 
 button:hover {
-    background-color: rgb(85, 75, 18);
+  background-color: rgb(85, 75, 18);
 }
 
 #ingame {
   display: none;
 }
 
-
 #ui {
-    display: flex;
-    text-align: left;
-    overflow: hidden;
+  display: flex;
+  text-align: left;
+  overflow: hidden;
 }
 
 #map_title {
-    display: flex;
-    justify-content: flex-start;
+  display: flex;
+  justify-content: flex-start;
 }
 
 #element {
-    display: flex;
-    justify-content: flex-start;
+  display: flex;
+  justify-content: flex-start;
 }
 
 #table {
-    min-width: 490px;
-    float:left;
+  min-width: 490px;
+  float: left;
 }
 
 #info {
-    float: right;
-    margin-left: 20px;
+  float: right;
+  margin-left: 20px;
+}
+
+#mission_points {
+  display: flex;
+  justify-content: space-between;
+}
+
+#mission_points div {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100px;
+  border: 3px solid rgb(133, 117, 27);
+  border-radius: 15px;
+}
+
+#spring_div {
+  background-color: rgba(0, 255, 0, 0.414);
+}
+#summer_div {
+  background-color: rgba(255, 242, 0, 0.414);
+}
+#autumn_div {
+  background-color: rgba(255, 119, 0, 0.414);
+}
+#winter_div {
+  background-color: rgba(0, 195, 255, 0.414);
+}
+
+.point {
+  font-size: 25px;
+  font-weight: bold;
 }
 
 #table_and_buttons {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 #transfrom_buttons {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
 
 #transfrom_buttons button {
-    margin: 3px 10px 3px 30px;
-} 
+  margin: 3px 10px 3px 30px;
+}
 
 #name {
   margin-bottom: 0px;
 }
 
 table {
-    border-collapse: separate;
-    border-spacing: 3px;
-    margin: 0px auto 40px auto;
+  border-collapse: separate;
+  border-spacing: 3px;
+  margin: 0px auto 40px auto;
 }
 
-table, th, td {
-    border: none;
+table,
+th,
+td {
+  border: none;
 }
 
-th, td {
-    background-color: rgb(164, 164, 109);
-    border-radius: 5px;
-    width: 40px;
-    height: 40px;
-    text-align: center;
+th,
+td {
+  background-color: rgb(164, 164, 109);
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
 }
 
 #missions {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 img {
-    max-height: 130px;
-    margin: 10px;
+  max-height: 130px;
+  margin: 10px;
 }
 .mountain {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(./images/tiles/mountain_tile.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(./images/tiles/mountain_tile.png);
 }
 
 .town {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(./images/tiles/village_tile.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(./images/tiles/village_tile.png);
 }
 
 .water {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(./images/tiles/water_tile.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(./images/tiles/water_tile.png);
 }
 
 .forest {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(./images/tiles/forest_tile.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(./images/tiles/forest_tile.png);
 }
 
 .farm {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(./images/tiles/plains_tile.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(./images/tiles/plains_tile.png);
+}
+
+.endscreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: 200ms ease-in-out;
+  border: 1px solid black;
+  border-radius: 10px;
+  z-index: 10;
+  background-color: rgb(255, 254, 173);
+  width: 500px;
+  max-width: 80%;
+}
+
+.endscreen.active {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.endscreen-header {
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid black;
+}
+
+.endscreen-header .title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.endscreen-body {
+  padding: 10px 15px;
+}
+
+#overlay {
+  position: fixed;
+  opacity: 0;
+  transition: 200ms ease-in-out;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+#overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#gameover {
+    margin-top: 10px;
 }

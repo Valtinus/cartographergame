@@ -213,6 +213,7 @@ const seasons = ["Spring", "Summer", "Autumn", "Winter"]
 
 const play_btn = document.querySelector('#play')
 const return_btn = document.querySelector('#return')
+const return_btn2 = document.querySelector('#return2')
 const name_inp = document.querySelector('#name')
 const menu_div = document.querySelector('#menu')
 const field = document.querySelector('table.field')
@@ -228,14 +229,26 @@ const current_season = document.querySelector('#current_season')
 
 const missions_container = document.querySelector("#missions")
 
+const spring_points = document.querySelector("#spring_points")
+const summer_points = document.querySelector("#summer_points")
+const autumn_points = document.querySelector("#autumn_points")
+const winter_points = document.querySelector("#winter_points")
+
+const overlay = document.getElementById('overlay')
+const modal = document.querySelector('#endscreen')
+
+const end_text = document.querySelector('#end_text')
+
 const ROWS = 11
 const COLS = 11
 
 const SEASON_TIME = 7
 let timer = 0
 
-let points = [0, 0, 0, 0]
+let season_points = [0, 0, 0, 0]
 let total_points = 0
+
+let canPlace = true
 
 
 play_btn.addEventListener('click', startGame)
@@ -248,6 +261,13 @@ const selectedMissions = getRandomMissions(missions)
 function startGame() {
     timer = 0
     total_points = 0
+    season_points = [0, 0, 0, 0]
+    canPlace = true
+    updateSeasonScore(0, 0)
+    updateSeasonScore(0, 1)
+    updateSeasonScore(0, 2)
+    updateSeasonScore(0, 3)
+
     if (name_inp.value === '') {
         alert('Enter a player name!')
         return
@@ -368,7 +388,6 @@ mirror_btn.addEventListener('click', () => {
     displayNextElement(mirrorElement(current_element))
 })
 
-
 field.addEventListener('click', (e) => {
     const clickedCell = e.target
     const x = clickedCell.cellIndex
@@ -378,40 +397,45 @@ field.addEventListener('click', (e) => {
 })
 
 function placeElementOnField(element, x, y) {
-    const rows = field.getElementsByTagName('tr');
-    const shape = element.shape
+    if (canPlace) {
 
-    for (let i = 0; i < shape.length; i++) {
-        for (let j = 0; j < shape[i].length; j++) {
-            if (shape[i][j] === 1) {
-                const cellX = x + j
-                const cellY = y + i
-                if (cellX < 0 || cellX >= 11 || cellY < 0 || cellY >= 11) {
-                    alert('Wrong placement')
-                    return
-                }
+        const rows = field.getElementsByTagName('tr');
+        const shape = element.shape
 
-                const cell = rows[cellY].getElementsByTagName('td')[cellX];
-                if (cell.className !== '') {
-                    alert('Wrong placement')
-                    return
+        for (let i = 0; i < shape.length; i++) {
+            for (let j = 0; j < shape[i].length; j++) {
+                if (shape[i][j] === 1) {
+                    const cellX = x + j
+                    const cellY = y + i
+                    if (cellX < 0 || cellX >= 11 || cellY < 0 || cellY >= 11) {
+                        alert('Wrong placement')
+                        return
+                    }
+
+                    const cell = rows[cellY].getElementsByTagName('td')[cellX]
+                    if (cell.className !== '') {
+                        alert('Wrong placement')
+                        return
+                    }
                 }
             }
         }
-    }
 
-    for (let i = 0; i < shape.length; i++) {
-        for (let j = 0; j < shape[i].length; j++) {
-            const cell = rows[y + i].getElementsByTagName('td')[x + j];
-            if (shape[i][j] === 1) {
-                cell.className = element.type
+        for (let i = 0; i < shape.length; i++) {
+            for (let j = 0; j < shape[i].length; j++) {
+                if (shape[i][j] === 1) {
+                    const cell = rows[y + i].getElementsByTagName('td')[x + j]
+                    cell.className = element.type
+                }
             }
         }
-    }
 
-    timer += element.time
-    newRound()
+        timer += element.time
+        newRound()
+    }
 }
+
+let current_season_num = 0
 
 function newRound() {
     if (timer < SEASON_TIME) {
@@ -421,20 +445,27 @@ function newRound() {
     else if (timer >= SEASON_TIME && timer < 2 * SEASON_TIME) {
         current_season.innerHTML = `Current season: ${seasons[1]}`
         setActiveMission(1, 2)
+        checkForSeasonChange(current_season_num, 1, 0, 1)
+        current_season_num = 1
     }
     else if (timer >= 2 * SEASON_TIME && timer < 3 * SEASON_TIME) {
         current_season.innerHTML = `Current season: ${seasons[2]}`
         setActiveMission(2, 3)
+        checkForSeasonChange(current_season_num, 2, 1, 2)
+        current_season_num = 2
     }
     else if (timer >= 3 * SEASON_TIME && timer < 4 * SEASON_TIME) {
         current_season.innerHTML = `Current season: ${seasons[3]}`
         setActiveMission(3, 0)
+        checkForSeasonChange(current_season_num, 3, 2, 3)
+        current_season_num = 3
     }
     else {
-        console.log("end")
+        endOfGame()
+        return
     }
 
-    
+
 
     time_left.innerHTML = `Time left from season: ${timer % 7}/${SEASON_TIME}`
     current_element = pickRandomElement()
@@ -482,16 +513,79 @@ function setActiveMission(s1, s2) {
     second.style.borderRadius = "25px"
 }
 
-function calcMissions (m1, m2) {
-    let total = 0
-
+function checkForSeasonChange(prevSeason, currSeason, mission1, mission2) {
+    if (prevSeason != currSeason) {
+        season_points[prevSeason] = calcSeasonMissions(mission1, mission2)
+        updateSeasonScore(season_points[prevSeason], prevSeason)
+    }
 }
 
-function calcBorderlandsMission () {
+function calcSeasonMissions(m1, m2) {
+    return (getMissionScore(selectedMissions[m1]) + getMissionScore(selectedMissions[m2]))
+}
+
+function getMissionScore(mission) {
+    let mission_score = 0
+    switch (mission) {
+        case 'borderlands':
+            return mission_score += calcBorderlandsMission()
+        case 'sleepy_valley':
+            return mission_score += calcSleepyValleyMission()
+        case 'watering_potatoes':
+            return mission_score += calcWateringPotatoesMission()
+        case 'edge_of_the_forest':
+            return mission_score += calcEdgeOfTheForestMission()
+        default:
+            console.log("error getting mission score")
+    }
+}
+
+function updateSeasonScore(score, season) {
+    if (season == 0) {
+        spring_points.innerHTML = score
+    }
+    else if (season == 1) {
+        summer_points.innerHTML = score
+    }
+    else if (season == 2) {
+        autumn_points.innerHTML = score
+    }
+    else {
+        winter_points.innerHTML = score
+    }
+}
+
+function calcMountainMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td')
+
+        for (let j = 0; j < cells.length; j++) {
+            if (cells[j].className == 'mountain') {
+                const hasNeighborAbove = i > 0 && rows[i - 1].getElementsByTagName('td')[j].className != ""
+                const hasNeighborBelow = i < rows.length - 1 && rows[i + 1].getElementsByTagName('td')[j].className != ""
+                const hasNeighborLeft = j > 0 && cells[j - 1].className != ""
+                const hasNeighborRight = j < cells.length - 1 && cells[j + 1].className != ""
+
+                if (hasNeighborAbove && hasNeighborBelow && hasNeighborLeft && hasNeighborRight) {
+                    score += 1
+                }
+            }
+        }
+    }
+
+    console.log("points for surrounded mountains: " + score)
+
+    return score
+}
+
+function calcBorderlandsMission() {
     const rows = table.getElementsByTagName('tr')
     const cols = rows[0].getElementsByTagName('td').length
     const rowCount = rows.length
-    
+
     let fullRowCount = 0
     let fullColCount = 0
 
@@ -521,16 +615,122 @@ function calcBorderlandsMission () {
         }
     }
 
-    return (fullRowCount + fullColCount) * 6
+    console.log("points for borderlands: " + ((fullRowCount + fullColCount) * 6))
+
+    return ((fullRowCount + fullColCount) * 6)
 }
 
+function calcSleepyValleyMission() {
+    const rows = field.getElementsByTagName('tr')
+    let count = 0
 
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td')
+        let forestCount = 0
 
+        for (let j = 0; j < cells.length; j++) {
+            if (cells[j].className == 'forest') {
+                forestCount++;
+            }
+        }
 
+        if (forestCount == 3) {
+            count++
+        }
+    }
 
+    console.log("points for sleepy valley: " + (count * 4))
 
+    return (count * 4)
+}
+
+function calcWateringPotatoesMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td')
+
+        for (let j = 0; j < cells.length; j++) {
+            if (cells[j].className === 'water') {
+                if (
+                    (i > 0 && rows[i - 1].getElementsByTagName('td')[j].className == 'farm') ||
+                    (i < rows.length - 1 && rows[i + 1].getElementsByTagName('td')[j].className == 'farm') ||
+                    (j > 0 && cells[j - 1].className == 'farm') ||
+                    (j < cells.length - 1 && cells[j + 1].className == 'farm')
+                ) {
+                    score += 2
+                }
+            }
+        }
+    }
+
+    console.log("points for watering potatoes: " + score)
+
+    return score
+}
+
+function calcEdgeOfTheForestMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td')
+
+        for (let j = 0; j < cells.length; j++) {
+            if (cells[j].className == 'forest') {
+                if (i == 0 || i == rows.length - 1 || j == 0 || j == cells.length - 1) {
+                    score += 1
+                }
+            }
+        }
+    }
+
+    console.log("points for edge of the forest: " + score)
+
+    return score
+}
+
+function calcTotalPoints() {
+    let sum = season_points.reduce((a, b) => {
+        return a + b
+    })
+    console.log(sum)
+    return sum
+}
+
+function endOfGame() {
+    canPlace = false
+    season_points[3] = calcSeasonMissions(3, 0)
+    updateSeasonScore(season_points[3], 3)
+    time_left.innerHTML = `Time left from season: 0/${SEASON_TIME}`
+    let total = calcTotalPoints() + calcMountainMission()
+    openModal(modal, total)
+    console.log("endOfGame function end")
+}
 
 return_btn.addEventListener('click', () => {
     menu_div.style.display = 'block'
     game_div.style.display = 'none'
 })
+
+return_btn2.addEventListener('click', () => {
+    menu_div.style.display = 'block'
+    game_div.style.display = 'none'
+    closeModal(modal)
+})
+
+function openModal(modal, total) {
+    if (modal == null) return
+    modal.classList.add('active')
+    overlay.classList.add('active')
+
+    end_text.innerHTML = `Your total score: ${total}`
+
+}
+
+function closeModal(modal) {
+    if (modal == null) return
+    modal.classList.remove('active')
+    overlay.classList.remove('active')
+}

@@ -25,15 +25,34 @@
     <div id="ingame">
         <h2></h2>
         <h2 id="map_title">Potato map</h3>
-        <div id="ui">
+            <div id="ui">
                 <div id="table">
                     <table class="field"></table>
+                    <h3>Points</h3>
+                    <div id="mission_points">
+                        <div id="spring_div">
+                            <h4>Spring:</h4>
+                            <p class="point" id="spring_points"></p>
+                        </div>
+                        <div id="summer_div">
+                            <h4>Summer:</h4>
+                            <p class="point" id="summer_points"></p>
+                        </div>
+                        <div id="autumn_div">
+                            <h4>Autumn:</h4>
+                            <p class="point" id="autumn_points"></p>
+                        </div>
+                        <div id="winter_div">
+                            <h4>Winter:</h4>
+                            <p class="point" id="winter_points"></p>
+                        </div>
+                    </div>
                 </div>
                 <div id="info">
                     <div id="season">
-                        <h3 id="current_season"></h3>
                         <div id="missions">
                         </div>
+                        <h3 id="current_season"></h3>
                         <h3 id="time_left"></h3>
                     </div>
                     <h3>Next piece:</h3>
@@ -49,8 +68,24 @@
                     </div>
                 </div>
                 <br>
-        </div>
-        <button id="return">Return to menu</button>
+            </div>
+
+            <button id="return">Return to menu</button>
+
+            <div class="endscreen" id="endscreen">
+                <div class="endscreen_header">
+                    <div class="title">
+                        <h4 id="gameover">
+                            Game Over
+                        </h4>
+                    </div>
+                </div>
+                <div class="endscreen_body">
+                    <h4 id="end_text"></h4>
+                    <button button id="return2">New game</button>
+                </div>
+            </div>
+            <div id="overlay"></div>
     </div>
 
     <script src="script.js"></script>
