@@ -164,45 +164,51 @@ const missions =
             "description": "A farmmezőiddel szomszédos vízmezőidért két-két pontot kapsz."
         },
         {
-            "id": "borderlands",
-            "title": "Határvidék",
-            "description": "Minden teli sorért vagy oszlopért 6-6 pontot kapsz."
-        }
-    ],
-    "extra": [
-        {
+            "id": "tree_line",
             "title": "Fasor",
             "description": "A leghosszabb, függőlegesen megszakítás nélkül egybefüggő erdőmezők mindegyikéért kettő-kettő pontot kapsz. Két azonos hosszúságú esetén csak az egyikért."
         },
         {
+            "id": "wealthy_town",
             "title": "Gazdag város",
             "description": "A legalább három különböző tereptípussal szomszédos falurégióidért három-három pontot kapsz."
         },
         {
+            "id": "watering_canal",
             "title": "Öntözőcsatorna",
             "description": "Minden olyan oszlopodért, amelyben a farm illetve a vízmezők száma megegyezik, négy-négy pontot kapsz. Mindkét tereptípusból legalább egy-egy mezőnek lennie kell az oszlopban ahhoz, hogy pontot kaphass érte."
         },
         {
+            "id": "magicians_valley",
             "title": "Mágusok völgye",
             "description": "A hegymezőiddel szomszédos vízmezőidért három-három pontot kapsz."
         },
         {
+            "id": "empty_site",
             "title": "Üres telek",
             "description": "A városmezőiddel szomszédos üres mezőkért 2-2 pontot kapsz."
         },
         {
+            "id": "row_of_houses",
             "title": "Sorház",
             "description": "A leghosszabb, vízszintesen megszakítás nélkül egybefüggő falumezők mindegyikéért kettő-kettő pontot kapsz."
         },
         {
+            "id": "odd_numbered_silos",
             "title": "Páratlan silók",
             "description": "Minden páratlan sorszámú teli oszlopodért 10-10 pontot kapsz."
         },
         {
+            "id": "rich_countryside",
             "title": "Gazdag vidék",
             "description": "Minden legalább öt különböző tereptípust tartalmazó sorért négy-négy pontot kapsz."
+        },
+        {
+            "id": "borderlands",
+            "title": "Határvidék",
+            "description": "Minden teli sorért vagy oszlopért 6-6 pontot kapsz."
         }
-    ],
+    ]
 }
 
 const mountains = [[2, 2], [4, 9], [6, 4], [9, 10], [10, 6]]
@@ -250,9 +256,7 @@ let total_points = 0
 
 let canPlace = true
 
-
 play_btn.addEventListener('click', startGame)
-
 
 let current_element
 
@@ -535,6 +539,22 @@ function getMissionScore(mission) {
             return mission_score += calcWateringPotatoesMission()
         case 'edge_of_the_forest':
             return mission_score += calcEdgeOfTheForestMission()
+        case 'tree_line':
+            return mission_score += calcTreeLineMission()
+        case 'wealthy_town':
+            return mission_score += calcWealthyTownMission()
+        case 'watering_canal':
+            return mission_score += calcWateringCanalMission()
+        case 'magicians_valley':
+            return mission_score += calcMagiciansValleyMission()
+        case 'empty_site':
+            return mission_score += calcEmptySiteMission()
+        case 'row_of_houses':
+            return mission_score += calcRowOfHouseMission()
+        case 'odd_numbered_silos':
+            return mission_score += calcOddNumberedSilosMission()
+        case 'rich_countryside':
+            return mission_score += calcRichCountrySideMission()
         default:
             console.log("error getting mission score")
     }
@@ -687,6 +707,281 @@ function calcEdgeOfTheForestMission() {
     }
 
     console.log("points for edge of the forest: " + score)
+
+    return score
+}
+
+function calcTreeLineMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+    let maxLineIndexes = []
+    let maxLineLength = 0
+
+    for (let j = 0; j < 11; j++) {
+        let currentLine = 0
+
+        for (let i = 0; i < 11; i++) {
+            const cell = rows[i].getElementsByTagName('td')[j]
+            if (cell.className == 'forest') {
+                currentLine++
+            } else {
+                if (currentLine > maxLineLength) {
+                    maxLineLength = currentLine
+                    maxLineIndexes = [j]
+                } else if (currentLine == maxLineLength) {
+                    maxLineIndexes.push(j)
+                }
+                currentLine = 0
+            }
+        }
+    }
+
+    if (maxLineIndexes.length > 0) {
+        const selectedLine = maxLineIndexes[0];
+        for (let i = 0; i < 11; i++) {
+            const cell = rows[i].getElementsByTagName('td')[selectedLine];
+            if (cell.className == 'forest') {
+                score += 2
+            }
+        }
+    }
+
+    console.log("points for tree line: " + score)
+
+    return score
+}
+
+function calcWealthyTownMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+
+    for (let i = 0; i < 11; i++) {
+        for (let j = 0; j < 11; j++) {
+            const cell = rows[i].getElementsByTagName('td')[j]
+            if (cell.className == 'town') {
+                const neighborTypes = []
+
+                const neighbors = [
+                    { x: -1, y: 0 },
+                    { x: 1, y: 0 },
+                    { x: 0, y: -1 },
+                    { x: 0, y: 1 },
+                ]
+
+                for (const neighbor of neighbors) {
+                    const neighborX = j + neighbor.x
+                    const neighborY = i + neighbor.y
+
+                    if (neighborX >= 0 && neighborX < 11 && neighborY >= 0 && neighborY < 11) {
+                        const neighborCell = rows[neighborY].getElementsByTagName('td')[neighborX]
+                        if (neighborCell.className) {
+                            if (!neighborTypes.includes(neighborCell.className)) {
+                                neighborTypes.push(neighborCell.className);
+                            }
+                        }
+                    }
+                }
+
+                if (neighborTypes.length >= 3) {
+                    score += 3
+                }
+            }
+        }
+    }
+
+
+    console.log("points for wealthy town: " + score)
+
+    return score;
+}
+
+function calcWateringCanalMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+
+    for (let j = 0; j < 11; j++) {
+        let waterCount = 0
+        let farmCount = 0
+
+        for (let i = 0; i < 11; i++) {
+            const cell = rows[i].getElementsByTagName('td')[j];
+            if (cell.className == 'water') {
+                waterCount++
+            } else if (cell.className == 'farm') {
+                farmCount++
+            }
+        }
+
+        if (waterCount == farmCount && waterCount > 0 && farmCount > 0) {
+            score += 4
+        }
+    }
+
+    console.log("points for watering canal: " + score)
+    
+    return score;
+}
+
+function calcMagiciansValleyMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+    
+    for (let i = 0; i < 11; i++) {
+        for (let j = 0; j < 11; j++) {
+            const cell = rows[i].getElementsByTagName('td')[j]
+            if (cell.className == 'water') {
+                const neighbors = [
+                    { x: -1, y: 0 },
+                    { x: 1, y: 0 },
+                    { x: 0, y: -1 },
+                    { x: 0, y: 1 },
+                ];
+                
+                for (const neighbor of neighbors) {
+                    const neighborX = j + neighbor.x
+                    const neighborY = i + neighbor.y
+                    
+                    if (neighborX >= 0 && neighborX < 11 && neighborY >= 0 && neighborY < 11) {
+                        const neighborCell = rows[neighborY].getElementsByTagName('td')[neighborX]
+                        if (neighborCell.className == 'mountain') {
+                            score += 3
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    console.log("points for magicians valley: " + score)
+    
+    return score
+}
+
+function calcEmptySiteMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+    
+    for (let i = 0; i < 11; i++) {
+        for (let j = 0; j < 11; j++) {
+            const cell = rows[i].getElementsByTagName('td')[j];
+            if (!cell.className) {
+                const neighbors = [
+                    { x: -1, y: 0 },
+                    { x: 1, y: 0 },
+                    { x: 0, y: -1 },
+                    { x: 0, y: 1 },
+                ];
+                
+                for (const neighbor of neighbors) {
+                    const neighborX = j + neighbor.x
+                    const neighborY = i + neighbor.y
+                    
+                    if (neighborX >= 0 && neighborX < 11 && neighborY >= 0 && neighborY < 11) {
+                        const neighborCell = rows[neighborY].getElementsByTagName('td')[neighborX]
+                        if (neighborCell.className == 'town') {
+                            score += 2
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    console.log("points for empty site: " + score)
+    
+    return score
+}
+
+function calcRowOfHouseMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+    let townRows = []
+    
+    for (let i = 0; i < 11; i++) {
+        const row = rows[i]
+        let townCells = []
+        let currentScore = 0
+        
+        for (let j = 0; j < 11; j++) {
+            const cell = row.getElementsByTagName('td')[j]
+            if (cell.className == 'town') {
+                currentScore += 2
+                townCells.push(cell)
+            } else if (townCells.length > 0) {
+                townRows.push({ cells: townCells, score: currentScore })
+                townCells = []
+                currentScore = 0;
+            }
+        }
+        
+        if (townCells.length > 0) {
+            townRows.push({ cells: townCells, score: currentScore })
+        }
+    }
+    
+    if (townRows.length > 0) {
+        const maxLength = Math.max(...townRows.map((row) => row.cells.length))
+        
+        townRows
+        .filter((row) => row.cells.length == maxLength)
+        .forEach((row) => {
+            score += row.score
+        });
+    }
+    
+    console.log("points for row of houses: " + score)
+
+    return score
+}
+
+function calcOddNumberedSilosMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+
+    for (let j = 0; j <= 11; j += 2) {
+        let isFull = true
+
+        for (let i = 1; i < 11; i++) {
+            const cell = rows[i].getElementsByTagName('td')[j]
+            if (!cell.className) {
+                isFull = false
+                break
+            }
+        }
+
+        if (isFull) {
+            score += 10
+        }
+    }
+
+    console.log("points for odd numbered silos: " + score)
+    
+    return score
+}
+
+function calcRichCountrySideMission() {
+    const rows = field.getElementsByTagName('tr')
+    let score = 0
+    
+    for (let i = 0; i < 11; i++) {
+        const row = rows[i]
+        const uniqueClasses = []
+
+        for (let j = 0; j < 11; j++) {
+            const cell = row.getElementsByTagName('td')[j]
+            if (cell.className && !uniqueClasses.includes(cell.className)) {
+                uniqueClasses.push(cell.className)
+            }
+        }
+
+        if (uniqueClasses.length >= 5) {
+            score += 4
+        }
+    }
+    
+    console.log("points for rich countryside: " + score)
 
     return score
 }
